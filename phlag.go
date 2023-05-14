@@ -3,7 +3,6 @@ package phlags
 import (
 	"errors"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -208,7 +207,7 @@ func (p *Phlag[T, A]) Bool() bool {
 	return false
 }
 
-func (p *Phlag[T, A]) Args() []PositionalArgument[A] {
+func (p *Phlag[T, A]) PositionalArguments() []PositionalArgument[A] {
 	if p.args != nil ||
 		len(p.args) != 0 {
 		args := make([]PositionalArgument[A], len(p.args))
@@ -226,29 +225,14 @@ func (p *Phlag[T, A]) Args() []PositionalArgument[A] {
 	return nil
 }
 
-type PositionalArgument[T any] struct {
-	value T
-}
-
-func (pa PositionalArgument[T]) String() *string {
-	v := any(pa.value).(string)
-
-	return &v
-}
-
-func (pa PositionalArgument[T]) Int() *int {
-	v, err := strconv.Atoi(any(pa.value).(string))
-	if err != nil {
-		return nil
+func (p *Phlag[T, A]) PositionalArgumentByIndex(idx int) PositionalArgument[A] {
+	if idx >= len(p.args) {
+		return PositionalArgument[A]{}
 	}
 
-	return &v
-}
+	v := p.args[idx]
 
-func (pa PositionalArgument[T]) Bool() bool {
-	b, err := strconv.ParseBool(any(pa.value).(string))
-	if err != nil {
-		return false
+	return PositionalArgument[A]{
+		value: v,
 	}
-	return b
 }
