@@ -39,11 +39,11 @@ func New(abrv string, name string, usage string, defaultValue any) *Phlag {
 	}
 
 	if pFull == nil {
-		pFull = make(map[string]any)
+		pFull = make(phlgs)
 	}
 
 	if pShort == nil {
-		pShort = make(map[string]any)
+		pShort = make(phlgs)
 	}
 
 	flg := &Phlag{
@@ -180,8 +180,6 @@ func parseIntoFlags(args []string) error {
 func Parse() error {
 	args := os.Args
 
-	flags := flgs
-
 	// if flag sets were made, then grab the
 	// appropriate set of flags by extracting
 	// the subcommand and then passing it to
@@ -189,16 +187,16 @@ func Parse() error {
 	// the subcommand and then parse the flag
 	// values (and positional args if they exist)
 	// to the appropriate flags
-	if flags != nil {
+	if len(flgs) != 0 {
 		cmd := os.Args[1]
 
-		ps := flags[cmd].(*PhlagSet).set
+		ps := flgs[cmd].(*PhlagSet).set
 
 		// override pFull and pShort
 		// with only the appropriate
 		// flags
-		pFull = make(map[string]any)
-		pShort = make(map[string]any)
+		pShort = make(phlgs)
+		pShort = make(phlgs)
 
 		for i := range ps {
 			if ps[i].abrv != "" {
@@ -328,6 +326,10 @@ func Parse() error {
 			}
 		}
 	}
+
+	pFull = make(phlgs)
+	pFull = make(phlgs)
+	flgs = make(phlagSet)
 
 	return nil
 }
