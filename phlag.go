@@ -16,9 +16,9 @@ func Init() {
 	pFull = make(map[string]any)
 }
 
-type Phlag[T any, A any] struct {
+type Phlag[T any] struct {
 	usage  string
-	args   []A
+	args   []PositionalArgument
 	dValue T
 	value  T
 }
@@ -35,8 +35,8 @@ func sanitizeName(name string) string {
 	return name
 }
 
-func New[T any, A any](abrv string, name string, usage string, defaultValue T) *Phlag[T, A] {
-	flg := &Phlag[T, A]{
+func New[T any](abrv string, name string, usage string, defaultValue T) *Phlag[T] {
+	flg := &Phlag[T]{
 		usage:  usage,
 		dValue: defaultValue,
 	}
@@ -56,7 +56,7 @@ func New[T any, A any](abrv string, name string, usage string, defaultValue T) *
 	return flg
 }
 
-func Parse[T any, A any]() error {
+func Parse[T any]() error {
 	flgSplits := make([]int, 0)
 
 	// find the os.Args index of each flag
@@ -125,17 +125,17 @@ func Parse[T any, A any]() error {
 			val = any(v).(T)
 		}
 
-		var f *Phlag[T, A]
+		var f *Phlag[T]
 
 		// find which map the flag was stored in
 		// based on the name, either full or
 		// abbreviated
 		if phlg, ok := pFull[name]; ok {
-			f = phlg.(*Phlag[T, A])
+			f = phlg.(*Phlag[T])
 		}
 
 		if phlg, ok := pShort[name]; ok {
-			f = phlg.(*Phlag[T, A])
+			f = phlg.(*Phlag[T])
 		}
 
 		// set the value to the flag
@@ -148,14 +148,16 @@ func Parse[T any, A any]() error {
 		// positional arguments
 		// were provided to the flag
 		if len(section) > 1 {
-			f.args = make([]A, len(section)-1)
+			f.args = make([]PositionalArgument, len(section)-1)
 
 			positional := section[1:]
 
 			for pI := range positional {
 				pV := positional[pI]
 
-				f.args[pI] = any(pV).(A)
+				f.args[pI] = PositionalArgument{
+					value: pV,
+				}
 			}
 		}
 	}
@@ -163,7 +165,7 @@ func Parse[T any, A any]() error {
 	return nil
 }
 
-func (p *Phlag[T, A]) String() *string {
+func (p *Phlag[T]) String() *string {
 	if any(p.value) == nil &&
 		any(p.dValue) != nil {
 		v := any(p.dValue).(string)
@@ -180,7 +182,7 @@ func (p *Phlag[T, A]) String() *string {
 	return nil
 }
 
-func (p *Phlag[T, A]) Int() *int {
+func (p *Phlag[T]) Int() *int {
 	if any(p.value) == nil &&
 		any(p.dValue) != nil {
 		v := any(p.dValue).(int)
@@ -197,7 +199,7 @@ func (p *Phlag[T, A]) Int() *int {
 	return nil
 }
 
-func (p *Phlag[T, A]) Bool() bool {
+func (p *Phlag[T]) Bool() bool {
 	switch any(p.value).(type) {
 	case bool:
 		v := any(p.value).(bool)
@@ -207,17 +209,13 @@ func (p *Phlag[T, A]) Bool() bool {
 	return false
 }
 
-func (p *Phlag[T, A]) PositionalArguments() []PositionalArgument[A] {
+func (p *Phlag[T]) PositionalArguments() []PositionalArgument {
 	if p.args != nil ||
 		len(p.args) != 0 {
-		args := make([]PositionalArgument[A], len(p.args))
+		args := make([]PositionalArgument, len(p.args))
 
 		for i, v := range p.args {
-			pA := PositionalArgument[A]{
-				value: v,
-			}
-
-			args[i] = pA
+			args[i] = v
 		}
 
 		return args
@@ -225,14 +223,10 @@ func (p *Phlag[T, A]) PositionalArguments() []PositionalArgument[A] {
 	return nil
 }
 
-func (p *Phlag[T, A]) PositionalArgumentByIndex(idx int) PositionalArgument[A] {
+func (p *Phlag[T]) PositionalArgumentByIndex(idx int) (PositionalArgument, error) {
 	if idx >= len(p.args) {
-		return PositionalArgument[A]{}
+		return PositionalArgument{}, errors.New("provided index out of range of Phlag Positional Arguments")
 	}
 
-	v := p.args[idx]
-
-	return PositionalArgument[A]{
-		value: v,
-	}
+	return p.args[idx], nil
 }
