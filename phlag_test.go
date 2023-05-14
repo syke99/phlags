@@ -12,10 +12,6 @@ func TestNew(t *testing.T) {
 
 	// Assert
 	assert.NotNil(t, flg)
-
-	// Clean-up
-	pShort = make(phlgs)
-	pShort = make(phlgs)
 }
 
 func TestNew_MissingNames(t *testing.T) {
@@ -28,7 +24,6 @@ func TestNew_MissingNames(t *testing.T) {
 
 func TestParse(t *testing.T) {
 	// Arrange
-
 	hello := New("-h", "--hello", "test usage", "test default")
 	goodbye := New("-g", "--goodbye", "test usage", "test default")
 
@@ -47,8 +42,4 @@ func TestParse(t *testing.T) {
 	assert.Equal(t, 4, *goodbye.args[0].Int())
 	assert.Equal(t, 5, *goodbye.args[1].Int())
 	assert.Equal(t, 6, *goodbye.args[2].Int())
-
-	// Clean-up
-	pShort = make(phlgs)
-	pShort = make(phlgs)
 }

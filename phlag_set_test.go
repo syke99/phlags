@@ -12,11 +12,6 @@ func TestNewSet(t *testing.T) {
 
 	// Assert
 	assert.NotNil(t, greetingSet)
-
-	// Clean-up
-	pShort = make(phlgs)
-	pShort = make(phlgs)
-	flgs = make(phlagSet)
 }
 
 func TestPhlagSet_AddPhlag(t *testing.T) {
@@ -29,7 +24,6 @@ func TestPhlagSet_AddPhlag(t *testing.T) {
 
 	// Assert
 	assert.Equal(t, 1, len(politeSet.set))
-	flgs = make(phlagSet)
 }
 
 func TestPhlagSet_Parse(t *testing.T) {
@@ -61,9 +55,4 @@ func TestPhlagSet_Parse(t *testing.T) {
 	assert.Equal(t, 4, *goodbye.args[0].Int())
 	assert.Equal(t, 5, *goodbye.args[1].Int())
 	assert.Equal(t, 6, *goodbye.args[2].Int())
-
-	// Clean-up
-	pShort = make(phlgs)
-	pShort = make(phlgs)
-	flgs = make(phlagSet)
 }

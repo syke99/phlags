@@ -327,9 +327,9 @@ func Parse() error {
 		}
 	}
 
-	pFull = make(phlgs)
-	pFull = make(phlgs)
-	flgs = make(phlagSet)
+	pFull = nil
+	pFull = nil
+	flgs = nil
 
 	return nil
 }
@@ -377,16 +377,6 @@ func (p *Phlag) Int() *int {
 	}
 	return nil
 }
-
-//func (p *Phlag[T]) Bool() bool {
-//	switch any(p.value).(type) {
-//	case bool:
-//		v := any(p.value).(bool)
-//
-//		return v
-//	}
-//	return false
-//}
 
 func (p *Phlag) PositionalArguments() []PositionalArgument {
 	if p.args != nil ||
