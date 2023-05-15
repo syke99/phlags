@@ -11,6 +11,9 @@ type PhlagSet struct {
 func NewSet(cmd string) *PhlagSet {
 	if flgs == nil {
 		flgs = make(phlagSet)
+		flgs["plagBase"] = &PhlagSet{
+			set: make([]*Phlag, 0),
+		}
 	}
 
 	ps := &PhlagSet{
@@ -20,6 +23,12 @@ func NewSet(cmd string) *PhlagSet {
 	flgs[cmd] = ps
 
 	return ps
+}
+
+func AddBaseSetPhlag(phlag *Phlag) {
+	set := flgs["plagBase"].(*PhlagSet)
+
+	set.set = append(set.set, phlag)
 }
 
 func (ps *PhlagSet) AddPhlag(phlag *Phlag) *PhlagSet {

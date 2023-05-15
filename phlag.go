@@ -12,21 +12,27 @@ var pShort phlgs
 var pFull phlgs
 
 type Phlag struct {
-	abrv   string
-	name   string
-	usage  string
-	args   []PositionalArgument
-	dValue any
-	value  any
+	present bool
+	abrv    string
+	name    string
+	usage   string
+	args    []PositionalArgument
+	dValue  any
+	value   any
 }
 
-func sanitizeName(name string) string {
+func sanitizeName(counter int, name string) string {
+
+	if counter == 2 {
+		return name
+	}
+
 	if strings.HasPrefix(name, "-") {
 		name = strings.TrimPrefix(name, "-")
 	}
 
 	if strings.HasPrefix(name, "-") {
-		sanitizeName(name)
+		sanitizeName(counter, name)
 	}
 
 	return name
@@ -54,13 +60,13 @@ func New(abrv string, name string, usage string, defaultValue any) *Phlag {
 	}
 
 	if abrv != "" {
-		abrv = sanitizeName(abrv)
+		abrv = sanitizeName(0, abrv)
 
 		pShort[abrv] = flg
 	}
 
 	if name != "" {
-		name = sanitizeName(name)
+		name = sanitizeName(0, name)
 
 		pShort[name] = flg
 	}
@@ -68,7 +74,7 @@ func New(abrv string, name string, usage string, defaultValue any) *Phlag {
 	return flg
 }
 
-func parseIntoFlags(args []string) error {
+func parseIntoFlags(args []string, base bool) error {
 	flgSplits := make([]int, 0)
 
 	// find the os.Args index of each flag
@@ -144,14 +150,17 @@ func parseIntoFlags(args []string) error {
 		// abbreviated
 		if phlg, ok := pFull[name]; ok {
 			f = phlg.(*Phlag)
+			f.present = true
 		}
 
 		if phlg, ok := pShort[name]; ok {
 			f = phlg.(*Phlag)
+			f.present = true
 		}
 
 		// set the value to the flag
-		if any(val) != nil {
+		if val != nil &&
+			f != nil {
 			f.value = val
 		}
 
@@ -201,13 +210,13 @@ func Parse() error {
 		for i := range ps {
 			if ps[i].abrv != "" {
 				v := ps[i]
-				abrv := sanitizeName(ps[i].abrv)
+				abrv := sanitizeName(0, ps[i].abrv)
 				pShort[abrv] = v
 			}
 
 			if ps[i].name != "" {
 				v := ps[i]
-				name := sanitizeName(ps[i].name)
+				name := sanitizeName(0, ps[i].name)
 				pFull[name] = v
 			}
 		}
@@ -293,10 +302,12 @@ func Parse() error {
 		// abbreviated
 		if phlg, ok := long[name]; ok {
 			f = phlg.(*Phlag)
+			f.present = true
 		}
 
 		if phlg, ok := short[name]; ok {
 			f = phlg.(*Phlag)
+			f.present = true
 		}
 
 		if f == nil {
