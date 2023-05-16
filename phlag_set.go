@@ -1,10 +1,13 @@
 package phlags
 
+import "os"
+
 type phlagSet map[string]any
 
 var flgs phlagSet
 
 type PhlagSet struct {
+	cmd string
 	set []*Phlag
 }
 
@@ -12,11 +15,13 @@ func NewSet(cmd string) *PhlagSet {
 	if flgs == nil {
 		flgs = make(phlagSet)
 		flgs["plagBase"] = &PhlagSet{
+			cmd: os.Args[0],
 			set: make([]*Phlag, 0),
 		}
 	}
 
 	ps := &PhlagSet{
+		cmd: cmd,
 		set: make([]*Phlag, 0),
 	}
 

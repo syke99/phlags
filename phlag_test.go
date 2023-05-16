@@ -8,7 +8,7 @@ import (
 
 func TestNew(t *testing.T) {
 	// Act
-	flg := New("-h", "--hello", "test usage", "test default")
+	flg, _ := New("-h", "--hello", "test usage", "test default")
 
 	// Assert
 	assert.NotNil(t, flg)
@@ -16,7 +16,7 @@ func TestNew(t *testing.T) {
 
 func TestNew_MissingNames(t *testing.T) {
 	// Act
-	flg := New("", "", "test usage", "test default")
+	flg, _ := New("", "", "test usage", "test default")
 
 	// Assert
 	assert.Nil(t, flg)
@@ -24,8 +24,8 @@ func TestNew_MissingNames(t *testing.T) {
 
 func TestParse(t *testing.T) {
 	// Arrange
-	hello := New("-h", "--hello", "test usage", "test default")
-	goodbye := New("-g", "--goodbye", "test usage", "test default")
+	hello, _ := New("-h", "--hello", "test usage", "test default")
+	goodbye, _ := New("-g", "--goodbye", "test usage", "test default")
 
 	os.Args = []string{"", "-h=helloWorld", "1", "2", "3", "-g=goodbyeAll", "4", "5", "6"}
 

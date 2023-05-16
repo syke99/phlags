@@ -17,7 +17,7 @@ func TestNewSet(t *testing.T) {
 func TestPhlagSet_AddPhlag(t *testing.T) {
 	// Arrange
 	politeSet := NewSet("polite")
-	hello := New("-h", "--hello", "test usage", "test default")
+	hello, _ := New("-h", "--hello", "test usage", "test default")
 
 	// Act
 	politeSet.AddPhlag(hello)
@@ -29,14 +29,14 @@ func TestPhlagSet_AddPhlag(t *testing.T) {
 func TestPhlagSet_Parse(t *testing.T) {
 	// Arrange
 	politeSet := NewSet("polite")
-	hello := New("-h", "--hello", "test usage", "test default")
-	goodbye := New("-g", "--goodbye", "test usage", "test default")
+	hello, _ := New("-h", "--hello", "test usage", "test default")
+	goodbye, _ := New("-g", "--goodbye", "test usage", "test default")
 
 	politeSet.AddPhlag(hello).AddPhlag(goodbye)
 
 	questionSet := NewSet("questions")
-	who := New("-wh", "--who", "test usage", "test default")
-	what := New("-wt", "--what", "test usage", "test default")
+	who, _ := New("-wh", "--who", "test usage", "test default")
+	what, _ := New("-wt", "--what", "test usage", "test default")
 
 	questionSet.AddPhlag(who).AddPhlag(what)
 
