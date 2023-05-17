@@ -1,14 +1,17 @@
 package phlags
 
 import (
+	"fmt"
 	"github.com/stretchr/testify/assert"
+	"github.com/syke99/phlags/internal"
 	"os"
+	"strconv"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
 	// Act
-	flg, _ := New("-h", "--hello", "test usage", "test default")
+	flg, _ := New("-h", "--hello", internal.TestUsage, internal.TestDefault)
 
 	// Assert
 	assert.NotNil(t, flg)
@@ -16,7 +19,7 @@ func TestNew(t *testing.T) {
 
 func TestNew_MissingNames(t *testing.T) {
 	// Act
-	flg, _ := New("", "", "test usage", "test default")
+	flg, _ := New("", "", internal.TestUsage, internal.TestDefault)
 
 	// Assert
 	assert.Nil(t, flg)
@@ -24,22 +27,22 @@ func TestNew_MissingNames(t *testing.T) {
 
 func TestParse(t *testing.T) {
 	// Arrange
-	hello, _ := New("-h", "--hello", "test usage", "test default")
-	goodbye, _ := New("-g", "--goodbye", "test usage", "test default")
+	hello, _ := New(internal.HelloAbrv, internal.HelloFull, internal.TestUsage, internal.TestDefault)
+	goodbye, _ := New(internal.GoodbyeAbrv, internal.GoodbyeFull, internal.TestUsage, internal.TestDefault)
 
-	os.Args = []string{"", "-h=helloWorld", "1", "2", "3", "-g=goodbyeAll", "4", "5", "6"}
+	os.Args = []string{"", fmt.Sprintf("%s=%s", internal.HelloAbrv, internal.HelloWorld), strconv.Itoa(internal.One), strconv.Itoa(internal.Two), strconv.Itoa(internal.Three), fmt.Sprintf("%s=%s", internal.GoodbyeAbrv, internal.GoodbyeAll), strconv.Itoa(internal.Four), strconv.Itoa(internal.Five), strconv.Itoa(internal.Six)}
 
 	// Act
 	err := Parse()
 
 	// Assert
 	assert.NoError(t, err)
-	assert.Equal(t, "helloWorld", *hello.String())
-	assert.Equal(t, 1, *hello.args[0].Int())
-	assert.Equal(t, 2, *hello.args[1].Int())
-	assert.Equal(t, 3, *hello.args[2].Int())
-	assert.Equal(t, "goodbyeAll", *goodbye.String())
-	assert.Equal(t, 4, *goodbye.args[0].Int())
-	assert.Equal(t, 5, *goodbye.args[1].Int())
-	assert.Equal(t, 6, *goodbye.args[2].Int())
+	assert.Equal(t, internal.HelloWorld, *hello.String())
+	assert.Equal(t, internal.One, *hello.args[0].Int())
+	assert.Equal(t, internal.Two, *hello.args[1].Int())
+	assert.Equal(t, internal.Three, *hello.args[2].Int())
+	assert.Equal(t, internal.GoodbyeAll, *goodbye.String())
+	assert.Equal(t, internal.Four, *goodbye.args[0].Int())
+	assert.Equal(t, internal.Five, *goodbye.args[1].Int())
+	assert.Equal(t, internal.Six, *goodbye.args[2].Int())
 }

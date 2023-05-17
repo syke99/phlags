@@ -1,7 +1,5 @@
 package phlags
 
-import "os"
-
 type phlagSet map[string]any
 
 var flgs phlagSet
@@ -15,7 +13,7 @@ func NewSet(cmd string) *PhlagSet {
 	if flgs == nil {
 		flgs = make(phlagSet)
 		flgs["plagBase"] = &PhlagSet{
-			cmd: os.Args[0],
+			cmd: "plagBase",
 			set: make([]*Phlag, 0),
 		}
 	}
